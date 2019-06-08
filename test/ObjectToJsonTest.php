@@ -78,7 +78,7 @@ class ObjectToJsonTest extends TestCase
      */
     public function testDateTimeReturnedAsISO8601()
     {
-        self::assertThat($this->mapper->stringify(new DateTime('2011-01-01T15:03:01.012345Z')), self::equalTo('"2011-01-01T15:03:01+0000"'));
+        self::assertThat($this->mapper->stringify([new DateTime('2011-01-01T15:03:01.012345Z')]), self::equalTo('["2011-01-01T15:03:01+0000"]'));
     }
 
     /**
@@ -89,6 +89,36 @@ class ObjectToJsonTest extends TestCase
     public function testFieldWithJsonIgnoreAnnotationIsNotPresentInJSON()
     {
         self::assertThat($this->mapper->stringify(new JsonIgnoreTestClass("someString")), self::equalTo('{"message":"someString"}'));
+    }
+
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testArrayShouldBeArray()
+    {
+        self::assertThat($this->mapper->stringify(["hello", "hello2"]), self::equalTo('["hello","hello2"]'));
+    }
+
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testArrayWithStringAndNumber()
+    {
+        self::assertThat($this->mapper->stringify(["hello", 42]), self::equalTo('["hello",42]'));
+    }
+
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testArrayOfObjects()
+    {
+        self::assertThat($this->mapper->stringify([new SimpleTestClass('message1'), new SimpleTestClass('message2')]), self::equalTo('[{"message":"message1"},{"message":"message2"}]'));
     }
 }
 

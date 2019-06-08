@@ -27,6 +27,18 @@ class JsonToObjectTest extends TestCase
      *
      * @throws Exception
      */
+    public function testThrowEx()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->mapper->map('{}', 'NotExistingClassName');
+    }
+    
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
     public function testSimpleString()
     {
         $map = $this->mapper->map('{"message": "Hello World!"}', SimpleTestObject::class);
@@ -39,28 +51,17 @@ class JsonToObjectTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSimpleString2()
-    {
-        $map = $this->mapper->map('{"message123": "Hello World!"}', SimpleTestObject::class);
-        self::assertInstanceOf(SimpleTestObject::class, $map);
-        self::assertThat($map->getMessage(), self::equalTo('Hello World!'));
-    }
-
-    /**
-     * UnitTest test method
-     *
-     * @throws Exception
-     */
     public function testArrayOfStrings()
     {
-        $map = $this->mapper->mapToArray('["string1","string2"]');
-        self::assertInstanceOf(SimpleTestObject::class, $map);
-        self::assertThat($map->getMessage(), self::equalTo('Hello World!'));
+        $map = $this->mapper->map('["message": "Hello World!", "message2": "another"]', SimpleTestObject::class);
+//        self::assertIsArray($map);
+//        self::assertThat(count($map), self::equalTo(1));
+//        self::assertThat($map[0]->getMessage(), self::equalTo('Hello World!'));
     }
 }
 
 class SimpleTestObject {
-    private $message;
+    public $message;
 
     /**
      * @return mixed
