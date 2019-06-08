@@ -1,0 +1,16 @@
+{
+  "name": "effect/json-mapper",
+  "description": "",
+  "version": "0.0.1-alpha",
+  "require": {
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "effect\\mapper\\": "src/"
+    }
+  }
+}
