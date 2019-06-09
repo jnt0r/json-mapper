@@ -28,7 +28,7 @@ class ObjectToJsonTest extends TestCase
      */
     public function testStringToJson()
     {
-        self::assertThat($this->mapper->stringify("Hallo Welt!"), self::equalTo('"Hallo Welt!"'));
+        self::assertThat($this->mapper->stringify("Hallo Welt!"), self::equalTo('["Hallo Welt!"]'));
     }
 
     /**
@@ -38,7 +38,7 @@ class ObjectToJsonTest extends TestCase
      */
     public function testIntToJson()
     {
-        self::assertThat($this->mapper->stringify(42), self::equalTo('42'));
+        self::assertThat($this->mapper->stringify(42), self::equalTo('[42]'));
     }
 
     /**
@@ -78,7 +78,7 @@ class ObjectToJsonTest extends TestCase
      */
     public function testDateTimeReturnedAsISO8601()
     {
-        self::assertThat($this->mapper->stringify([new DateTime('2011-01-01T15:03:01.012345Z')]), self::equalTo('["2011-01-01T15:03:01+0000"]'));
+        self::assertThat($this->mapper->stringify(["datetime" => new DateTime('2011-01-01T15:03:01.012345Z')]), self::equalTo('{"datetime":"2011-01-01T15:03:01+0000"}'));
     }
 
     /**
@@ -118,7 +118,7 @@ class ObjectToJsonTest extends TestCase
      */
     public function testArrayWithPropertyAndValue()
     {
-        self::assertThat($this->mapper->stringify(["message" => "hello", "something" => "else"]), self::equalTo('["message":"hello","something":"else"]'));
+        self::assertThat($this->mapper->stringify(["message" => "hello", "something" => "else"]), self::equalTo('{"message":"hello","something":"else"}'));
     }
 
     /**

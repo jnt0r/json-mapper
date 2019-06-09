@@ -15,11 +15,27 @@ class JsonToObjectTest extends TestCase
      */
     private $mapper;
 
-    protected function setUp(): void
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testAA()
     {
-        parent::setUp();
+        $map = $this->mapper->map('["string1","string2"]');
+        self::assertIsArray($map);
+        self::assertThat($map, self::equalTo(["string1", "string2"]));
+    }
 
-        $this->mapper = new JsonMapper();
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testSimpleString2()
+    {
+        $map = $this->mapper->map('"string"');
+        self::assertThat($map, self::equalTo("string"));
     }
 
     /**
@@ -33,7 +49,7 @@ class JsonToObjectTest extends TestCase
 
         $this->mapper->map('{}', 'NotExistingClassName');
     }
-    
+
     /**
      * UnitTest test method
      *
@@ -89,14 +105,24 @@ class JsonToObjectTest extends TestCase
      *
      * @throws Exception
      */
-    public function testStringArray()
+    public function testArrayWithKeyAndValues()
     {
-        $map = $this->mapper->map('["string1", "string2"]', SplString::class);
-        self::assertThat($map, self::equalTo('Hello'));
+        $map = $this->mapper->map('{"key1":"value1","key2":"value2"}');
+        self::assertIsObject($map);
+        self::assertThat($map->key1, self::equalTo("value1"));
+        self::assertThat($map->key2, self::equalTo("value2"));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mapper = new JsonMapper();
     }
 }
 
-class SimpleTestObject {
+class SimpleTestObject
+{
     public $message;
 
     /**

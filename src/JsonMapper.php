@@ -30,18 +30,26 @@ class JsonMapper
         if ($type == 'object') {
             return json_encode($this->getProperties($object), JSON_UNESCAPED_SLASHES);
         } else if ($type == 'array') {
-            $json = "";
+            $properties = [];
             foreach ($object as $key => $item) {
-                if (is_string($key)) {
-                    $json .= '"' . $key .'":' . $this->stringify($item) . ',';
+                if (is_object($item)) {
+                    if (is_string($key)) {
+                        $properties[$key] = $this->getProperties($item);
+                    } else {
+                        $properties[] = $this->getProperties($item);
+                    }
                 } else {
-                    $json .= $this->stringify($item) . ',';
+                    if (is_string($key)) {
+                        $properties[$key] = $item;
+                    } else {
+                        $properties[] = $item;
+                    }
                 }
             }
-            $json = substr($json, 0, -1);
-            return '[' . $json . ']';
+            print_r($properties);
+            return json_encode($properties, JSON_UNESCAPED_SLASHES);
         } else {
-            return json_encode($object, JSON_UNESCAPED_SLASHES);
+            return '['.json_encode($object, JSON_UNESCAPED_SLASHES).']';
         }
     }
 
@@ -98,29 +106,32 @@ class JsonMapper
      *
      * @return object|array
      */
-    public function map(string $json, string $className)
+    public function map(string $json, string $className = null)
     {
-        print $className;
-        if (!class_exists($className)) {
-            throw new InvalidArgumentException();
-        }
-        $reflection = $this->reflect($className);
-        $reflectionProperties = $reflection->getProperties();
-        $data = json_decode($json);
-
-        if ($data == null) {
-            return null;
-        } else if (is_array($data)) {
-            $objects = [];
-
-            foreach ($data as $d) {
-                $objects[] = $this->setProperties($className, $reflectionProperties, $d);
-            }
-            return $objects;
-        } else if (is_object($data)) {
-            return $this->setProperties($className, $reflectionProperties, $data);
+        if ($className == null) {
+            return json_decode($json);
         } else {
-            return $data;
+            if (!class_exists($className)) {
+                throw new InvalidArgumentException();
+            }
+            $reflection = $this->reflect($className);
+            $reflectionProperties = $reflection->getProperties();
+            $data = json_decode($json);
+
+            if ($data == null) {
+                return null;
+            } else if (is_array($data)) {
+                $objects = [];
+
+                foreach ($data as $d) {
+                    $objects[] = $this->setProperties($className, $reflectionProperties, $d);
+                }
+                return $objects;
+            } else if (is_object($data)) {
+                return $this->setProperties($className, $reflectionProperties, $data);
+            } else {
+                return $data;
+            }
         }
     }
 
