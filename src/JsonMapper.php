@@ -31,8 +31,12 @@ class JsonMapper
             return json_encode($this->getProperties($object), JSON_UNESCAPED_SLASHES);
         } else if ($type == 'array') {
             $json = "";
-            foreach ($object as $item) {
-                $json .= $this->stringify($item) . ',';
+            foreach ($object as $key => $item) {
+                if (is_string($key)) {
+                    $json .= '"' . $key .'":' . $this->stringify($item) . ',';
+                } else {
+                    $json .= $this->stringify($item) . ',';
+                }
             }
             $json = substr($json, 0, -1);
             return '[' . $json . ']';

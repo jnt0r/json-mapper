@@ -116,6 +116,16 @@ class ObjectToJsonTest extends TestCase
      *
      * @throws Exception
      */
+    public function testArrayWithPropertyAndValue()
+    {
+        self::assertThat($this->mapper->stringify(["message" => "hello", "something" => "else"]), self::equalTo('["message":"hello","something":"else"]'));
+    }
+
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
     public function testArrayOfObjects()
     {
         self::assertThat($this->mapper->stringify([new SimpleTestClass('message1'), new SimpleTestClass('message2')]), self::equalTo('[{"message":"message1"},{"message":"message2"}]'));
