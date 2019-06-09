@@ -53,10 +53,46 @@ class JsonToObjectTest extends TestCase
      */
     public function testArrayOfStrings()
     {
-        $map = $this->mapper->map('["message": "Hello World!", "message2": "another"]', SimpleTestObject::class);
-//        self::assertIsArray($map);
-//        self::assertThat(count($map), self::equalTo(1));
-//        self::assertThat($map[0]->getMessage(), self::equalTo('Hello World!'));
+        $map = $this->mapper->map('[{"message":"Hello World!"}]', SimpleTestObject::class);
+        self::assertIsArray($map);
+        self::assertThat(count($map), self::equalTo(1));
+        self::assertThat($map[0]->getMessage(), self::equalTo('Hello World!'));
+    }
+
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testArrayOfObjectsWithTwoObjects()
+    {
+        $map = $this->mapper->map('[{"message":"Hello World!"},{"message":"another"}]', SimpleTestObject::class);
+        self::assertIsArray($map);
+        self::assertThat(count($map), self::equalTo(2));
+        self::assertThat($map[0]->getMessage(), self::equalTo('Hello World!'));
+        self::assertThat($map[1]->getMessage(), self::equalTo('another'));
+    }
+
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testSimpleStringInJSON()
+    {
+        $map = $this->mapper->map('"Hello"', SimpleTestObject::class);
+        self::assertThat($map, self::equalTo('Hello'));
+    }
+
+    /**
+     * UnitTest test method
+     *
+     * @throws Exception
+     */
+    public function testStringArray()
+    {
+        $map = $this->mapper->map('["string1", "string2"]', SplString::class);
+        self::assertThat($map, self::equalTo('Hello'));
     }
 }
 

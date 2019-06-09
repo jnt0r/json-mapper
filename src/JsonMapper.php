@@ -28,7 +28,7 @@ class JsonMapper
         $type = gettype($object);
 
         if ($type == 'object') {
-            return json_encode($this->getProperties($object));
+            return json_encode($this->getProperties($object), JSON_UNESCAPED_SLASHES);
         } else if ($type == 'array') {
             $json = "";
             foreach ($object as $item) {
@@ -37,7 +37,7 @@ class JsonMapper
             $json = substr($json, 0, -1);
             return '[' . $json . ']';
         } else {
-            return json_encode($object);
+            return json_encode($object, JSON_UNESCAPED_SLASHES);
         }
     }
 
@@ -96,28 +96,46 @@ class JsonMapper
      */
     public function map(string $json, string $className)
     {
+        print $className;
         if (!class_exists($className)) {
             throw new InvalidArgumentException();
         }
-
-        $object = new $className();
         $reflection = $this->reflect($className);
-
+        $reflectionProperties = $reflection->getProperties();
         $data = json_decode($json);
 
-        if ($data != null) {
-            foreach ($reflection->getProperties() as $property) {
-                $property->setAccessible(true);
-                $name = $property->getName();
-                $property->setValue($object, $data->$name);
+        if ($data == null) {
+            return null;
+        } else if (is_array($data)) {
+            $objects = [];
+
+            foreach ($data as $d) {
+                $objects[] = $this->setProperties($className, $reflectionProperties, $d);
             }
+            return $objects;
+        } else if (is_object($data)) {
+            return $this->setProperties($className, $reflectionProperties, $data);
+        } else {
+            return $data;
+        }
+    }
+
+    /**
+     * @param string $className
+     * @param array  $reflectionProperties
+     * @param        $data
+     *
+     * @return mixed
+     */
+    private function setProperties(string &$className, array &$reflectionProperties, &$data): object
+    {
+        $object = new $className();
+        foreach ($reflectionProperties as $property) {
+            $property->setAccessible(true);
+            $name = $property->getName();
+            $property->setValue($object, $data->$name);
         }
         return $object;
-    }
-
-    public function mapToArray(string $string): array
-    {
-
-    }
+}
 }
 
