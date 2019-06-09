@@ -78,7 +78,7 @@ class ObjectToJsonTest extends TestCase
      */
     public function testDateTimeReturnedAsISO8601()
     {
-        self::assertThat($this->mapper->stringify(["datetime" => new DateTime('2011-01-01T15:03:01.012345Z')]), self::equalTo('{"datetime":"2011-01-01T15:03:01+0000"}'));
+        self::assertThat($this->mapper->stringify(["datetime" => new DateTime('2011-01-01T15:03:01.012345Z')] ), self::equalTo('{"datetime":"2011-01-01T15:03:01+0000"}'));
     }
 
     /**

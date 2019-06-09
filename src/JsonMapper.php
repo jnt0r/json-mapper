@@ -46,7 +46,6 @@ class JsonMapper
                     }
                 }
             }
-            print_r($properties);
             return json_encode($properties, JSON_UNESCAPED_SLASHES);
         } else {
             return '['.json_encode($object, JSON_UNESCAPED_SLASHES).']';
